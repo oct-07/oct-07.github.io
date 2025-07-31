@@ -1,0 +1,33 @@
+name: Build and Deploy Hexo Site
+
+on: [push]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 🔧
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install Hexo Dependencies 📦
+        run: |
+          npm install hexo-cli -g
+          npm install
+
+      - name: Generate Static Files 🏗️
+        run: hexo generate
+
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages  # 推荐部署到gh-pages分支
+          FOLDER: public    # Hexo默认生成目录
+          CLEAN: true       # 部署前清理目标分支
